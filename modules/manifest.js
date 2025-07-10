@@ -50,8 +50,8 @@ async function parse(file, errors = {})
             json.content_scripts.push(...includeJson.content_scripts);
         }
 
-        json.request_rules = handleEnv(json.request_rules, json.env);
-        json.content_scripts = normalizeInjects(json.content_scripts);
+        handleEnv([json.request_rules, json.content_scripts], json.env);
+        normalizeInjects(json.content_scripts);
 
         console.log(file, json);
     }
@@ -65,7 +65,7 @@ async function parse(file, errors = {})
 }
 
 /**
- * Replace ${env.VARIABLE} to real values in `request_rules`
+ * Replace ${env.VARIABLE} to real values from `env`
  */
 function handleEnv(data, env = {})
 {

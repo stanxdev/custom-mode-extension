@@ -17,7 +17,7 @@
         "",
         "",
         "`env`              object",
-        "   Allows to use sensitive variables in `request_rules`",
+        "   Allows to use sensitive variables in `request_rules` and `content_scripts`",
         "   You can add some gitignored '.env' file to `includes` with only `env` section",
         "   Variables can be used as ${env.VARIABLE}",
         "",
