@@ -9,7 +9,7 @@ COLORS=(
     "#ffa040" # error
     "transparent"
 )
-FILL=(1 0 3) # fill color indices for circles (inject, request, error)
+FILL=(1 0 3) # fill color indices for circles (bottom, top, accent)
 
 dir=$(dirname -- "$(readlink -f -- "$0")")
 
@@ -22,8 +22,8 @@ mapfile -t colors < <(
         "$dir/$MANIFEST"
 )
 
-sed -e "/id=\"inject\"/s/fill=\"[^\"]*\"/fill=${colors[${FILL[0]}]}/" \
-    -e "/id=\"request\"/s/fill=\"[^\"]*\"/fill=${colors[${FILL[1]}]}/" \
-    -e "/id=\"error\"/s/fill=\"[^\"]*\"/fill=${colors[${FILL[2]}]}/" \
+sed -e "/id=\"bottom\"/s/fill=\"[^\"]*\"/fill=${colors[${FILL[0]}]}/" \
+    -e "/id=\"top\"/s/fill=\"[^\"]*\"/fill=${colors[${FILL[1]}]}/" \
+    -e "/id=\"accent\"/s/fill=\"[^\"]*\"/fill=${colors[${FILL[2]}]}/" \
     "$dir/icon.svg" |
     magick -background none -size $SIZE - "$dir/icon.png"

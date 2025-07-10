@@ -1,21 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" width="128" height="128" fill="none" stroke-width="3">
-    <g id="inject" fill="#548af7">
-        <mask id="injectClip" stroke="none">
+    <g id="bottom" fill="#548af7">
+        <mask id="bottomClip" stroke="none">
             <circle cx="4.5" cy="9.5" r="4.5" fill="white"/>
         </mask>
-        <circle cx="4.5" cy="9.5" r="4.5" mask="url(#injectClip)"/>
+        <circle cx="4.5" cy="9.5" r="4.5" mask="url(#bottomClip)"/>
     </g>
-    <g id="request" fill="#6c707e">
-        <mask id="requestMask" stroke="none">
+    <g id="top" fill="#6c707e">
+        <mask id="topMask" stroke="none">
             <rect width="100%" height="100%" fill="white"/>
             <circle cx="4.5" cy="9.5" r="5.5" fill="black"/>
         </mask>
-        <clipPath id="requestClip">
+        <clipPath id="topClip">
             <circle cx="9.5" cy="4.5" r="4.5" fill="transparent"/>
         </clipPath>
-        <circle cx="9.5" cy="4.5" r="4.5" clip-path="url(#requestClip)" mask="url(#requestMask)"/>
+        <circle cx="9.5" cy="4.5" r="4.5" clip-path="url(#topClip)" mask="url(#topMask)"/>
     </g>
-    <g id="error" fill="#ffa040">
+    <g id="accent" fill="#ffa040">
         <circle cx="12" cy="12" r="2" stroke="none"/>
     </g>
 </svg>

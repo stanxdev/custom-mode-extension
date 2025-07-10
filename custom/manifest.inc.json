@@ -6,7 +6,7 @@
         "`theme`            object",
         "   Allows to customize action icon colors",
         "   This section makes sense only in this file but not in `includes`",
-        "   `icon`          object { disabled: color, enabled: color, error: color }",
+        "   `icon`          object { disabled: color, enabled: color, accent: color, error: color }",
         "",
         "",
         "`includes`         string[]",
@@ -71,6 +71,7 @@
         "icon": {
             "disabled": "#6c707e",
             "enabled": "#548af7",
+            "accent": "#55ff7f",
             "error": "#ffa040"
         }
     },

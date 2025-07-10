@@ -1,29 +1,42 @@
 import { getState } from './state.js';
 
-async function updateAction(badgeOnError = false)
+const defaultAccentTimeout = 3000;
+
+/**
+ * Action icon and badge depends on state of extension
+ * Also allows to show the accent (small circle) for some time
+ */
+async function updateAction({ badgeOnError = false, accent = false, accentTimeout = defaultAccentTimeout } = {})
 {
     let state = await getState(),
-        hasErrors = Object.values(state.errors).some(x => Object.keys(x).length);
+        icon = state.theme.icon,
+        hasErrors = Object.values(state.errors).some(x => Object.keys(x).length),
+        iconParams = {
+            bottom: state.injects.registered.length ? icon.enabled : icon.disabled,
+            top: state.requests.registered.length ? icon.enabled : icon.disabled,
+            accent: hasErrors ? icon.error : accent ? icon.accent : 'transparent'
+        };
 
-    chrome.action.setIcon({
-        imageData: generateIcon(
-            state.theme.icon,
-            state.requests.registered.length,
-            state.injects.registered.length,
-            hasErrors
-        )
-    });
+    chrome.action.setIcon({ imageData: generateIcon(iconParams) });
 
     if (!hasErrors)
     {
         chrome.action.setBadgeText({ text: '' });
+
+        if (accent && accentTimeout)
+        {
+            setTimeout(() =>
+                chrome.action.setIcon({
+                    imageData: generateIcon({ bottom: iconParams.bottom, top: iconParams.top })
+                }),
+                accentTimeout
+            );
+        }
     }
     else if (badgeOnError)
     {
-        chrome.action.setBadgeBackgroundColor({ color: state.theme.icon.error });
-        chrome.action.setBadgeText({
-            text: '!'
-        });
+        chrome.action.setBadgeBackgroundColor({ color: icon.error });
+        chrome.action.setBadgeText({ text: '!' });
     }
 }
 
@@ -31,11 +44,7 @@ async function updateAction(badgeOnError = false)
  * Draw icon on canvas
  * @returns ImageData
  */
-function generateIcon(
-    colors = { enabled: '#548AF7', disabled: '#6C707E', error: '#ffa040' },
-    hasRequests = false,
-    hasInjects = false,
-    hasErrors = false)
+function generateIcon({ bottom = '#6C707E', top = '#6C707E', accent = 'transparent' })
 {
     // Action icon is 16x16, viewport is smaller... So scale context to avoid blur
     const viewportSize = 14;
@@ -47,13 +56,13 @@ function generateIcon(
 
     ctx.scale(scale, scale);
 
-    // Injects circle
+    // Bottom circle
     ctx.beginPath();
     ctx.arc(4.5, 9.5, 4.5, 0, Math.PI * 2, true);
-    ctx.fillStyle = hasInjects ? colors.enabled : colors.disabled;
+    ctx.fillStyle = bottom;
     ctx.fill();
 
-    // Requests half-circle
+    // Top half-circle
     ctx.save();
     ctx.beginPath();
     ctx.rect(4.5, 0, 14, 9.5);
@@ -62,18 +71,15 @@ function generateIcon(
 
     ctx.beginPath();
     ctx.arc(9.5, 4.5, 4.5, 0, Math.PI * 2, true);
-    ctx.fillStyle = hasRequests ? colors.enabled : colors.disabled;
+    ctx.fillStyle = top;
     ctx.fill();
     ctx.restore();
 
-    // Errors circle
-    if (hasErrors)
-    {
-        ctx.beginPath();
-        ctx.arc(12, 12, 2, 0, Math.PI * 2, true);
-        ctx.fillStyle = colors.error;
-        ctx.fill();
-    }
+    // Accent small circle
+    ctx.beginPath();
+    ctx.arc(12, 12, 2, 0, Math.PI * 2, true);
+    ctx.fillStyle = accent;
+    ctx.fill();
 
     return ctx.getImageData(0, 0, canvasSize, canvasSize);
 }

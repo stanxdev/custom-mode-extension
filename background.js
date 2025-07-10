@@ -23,7 +23,7 @@ chrome.storage.onChanged.addListener(async (changes, _area) =>
     if (changes.ts || changes.injects)
         await updateInjects();
 
-    updateAction(!!changes.ts);
+    updateAction({ badgeOnError: !!changes.ts });
 });
 
 /**
