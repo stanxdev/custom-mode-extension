@@ -1,0 +1,32 @@
+{
+    "request_rules": [
+        {
+            "id": 1091,
+            "priority": 1,
+            "action": {
+                "type": "redirect",
+                "redirect": {
+                    "regexSubstitution": "https://imginn.com/p/\\1"
+                }
+            },
+            "condition": {
+                "regexFilter": "^https://www\\.instagram.com/(?:.*?/)?(?:reel|p)/(.*)[^!]$",
+                "resourceTypes": [
+                    "main_frame"
+                ]
+            }
+        }
+    ],
+    "content_scripts": [
+        {
+            "id": "imginn.com",
+            "matches": [
+                "https://imginn.com/*"
+            ],
+            "css": [
+                "instagram/imginn.com.css"
+            ],
+            "run_at": "document_start"
+        }
+    ]
+}

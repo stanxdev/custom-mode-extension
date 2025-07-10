@@ -1,0 +1,25 @@
+#header,
+.bread-nav,
+.block-sulvo,
+.downloads {
+    display: none !important;
+}
+
+body {
+    background: #171717 !important;
+    color: #737373 !important;
+}
+
+a:not(:has(h2)) {
+    color: #bb2b3b;
+}
+
+div.page-post {
+    .show {
+        width: 416px;
+    }
+    .desc,
+    .comments .comment {
+        background: #141414;
+    }
+}

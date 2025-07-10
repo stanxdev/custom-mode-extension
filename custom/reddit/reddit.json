@@ -1,0 +1,49 @@
+{
+    "description": [
+        "Redirect reddit.com to RedLib and set cookies for settings",
+        "",
+        "theme                      black, dark, doomone, dracula, gold, gruvboxdark, gruvboxlight,",
+        "                           icebergDark, laserwave, libredditBlack, libredditDark, libredditLightlight,",
+        "                           light, midnightPurple, nord, rosebox, tokyoNight, violet",
+        "hide_score                 on, off",
+        "..."
+    ],
+    "request_rules": [
+        {
+            "id": 1181,
+            "priority": 1,
+            "action": {
+                "type": "redirect",
+                "redirect": {
+                    "regexSubstitution": "https://farside.link/libreddit/r/\\1"
+                }
+            },
+            "condition": {
+                "regexFilter": "^https://www\\.reddit\\.com/r/(.*)[^!]$",
+                "resourceTypes": [
+                    "main_frame"
+                ]
+            }
+        },
+        {
+            "id": 1182,
+            "priority": 1,
+            "action": {
+                "type": "modifyHeaders",
+                "requestHeaders": [
+                    {
+                        "header": "cookie",
+                        "operation": "append",
+                        "value": "theme=light;hide_score=off"
+                    }
+                ]
+            },
+            "condition": {
+                "urlFilter": "https://*/r/*",
+                "resourceTypes": [
+                    "main_frame"
+                ]
+            }
+        }
+    ]
+}
