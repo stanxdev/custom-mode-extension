@@ -1,12 +1,16 @@
 {
     "description": [
-        "Redirect reddit.com to RedLib and set cookies for settings",
-        "",
-        "theme                      black, dark, doomone, dracula, gold, gruvboxdark, gruvboxlight,",
-        "                           icebergDark, laserwave, libredditBlack, libredditDark, libredditLightlight,",
-        "                           light, midnightPurple, nord, rosebox, tokyoNight, violet",
-        "hide_score                 on, off",
-        "..."
+        "1181   www.reddit.com/r/   =>  ${env.REDLIB}/r/",
+        "       - exception: ! at the end",
+        "       - https://github.com/redlib-org/redlib-instances/blob/main/instances.md",
+        "       - https://farside.link/libreddit",
+        "1182   (reddit|redlib|rl)/r/",
+        "       - cookies for settings",
+        "           theme       black, dark, doomone, dracula, gold, gruvboxdark, gruvboxlight,",
+        "                       icebergDark, laserwave, libredditBlack, libredditDark, libredditLightlight,",
+        "                       light, midnightPurple, nord, rosebox, tokyoNight, violet",
+        "           hide_score  on, off",
+        "           ..."
     ],
     "request_rules": [
         {
@@ -15,7 +19,7 @@
             "action": {
                 "type": "redirect",
                 "redirect": {
-                    "regexSubstitution": "https://farside.link/libreddit/r/\\1"
+                    "regexSubstitution": "${env.REDLIB}/r/\\1"
                 }
             },
             "condition": {
@@ -34,12 +38,12 @@
                     {
                         "header": "cookie",
                         "operation": "append",
-                        "value": "theme=light;hide_score=off"
+                        "value": "theme=${env.REDLIB_THEME};hide_score=off"
                     }
                 ]
             },
             "condition": {
-                "urlFilter": "https://*/r/*",
+                "regexFilter": "^https://.*?(reddit|redlib|rl).*?/r/.*[^!]$",
                 "resourceTypes": [
                     "main_frame"
                 ]
