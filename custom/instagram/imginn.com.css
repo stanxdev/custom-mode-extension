@@ -16,7 +16,7 @@ a:not(:has(h2)) {
 
 div.page-post {
     .show {
-        width: 416px;
+        width: 440px;
     }
     .desc,
     .comments .comment {

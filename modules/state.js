@@ -3,7 +3,7 @@ const storage = chrome.storage.local;
 const storageTpl = {
     requests: { rules: [], disabled: [], enabled: true },
     injects: { rules: [], disabled: [], enabled: true },
-    theme: { icon: { disabled: "#6C707E", enabled: "#548AF7", accent: "#55ff7f", error: "#ffa040" } },
+    theme: { icon: { disabled: "#6c707e", enabled: "#548af7", accent: "#55ff7f", error: "#ffa040" } },
     errors: { manifest: {}, requests: {}, injects: {} },
     ts: 0
 };

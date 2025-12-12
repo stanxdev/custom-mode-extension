@@ -44,7 +44,7 @@ async function updateAction({ badgeOnError = false, accent = false, accentTimeou
  * Draw icon on canvas
  * @returns ImageData
  */
-function generateIcon({ bottom = '#6C707E', top = '#6C707E', accent = 'transparent' })
+function generateIcon({ bottom = '#6c707e', top = '#6c707e', accent = 'transparent' })
 {
     // Action icon is 16x16, viewport is smaller... So scale context to avoid blur
     const viewportSize = 14;
