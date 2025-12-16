@@ -4,26 +4,23 @@
 MANIFEST=../custom/manifest.inc.json
 SIZE=128x128
 COLORS=(
-    "#6c707e" # disabled
-    "#548af7" # enabled
-    "#ffa040" # error
-    "transparent"
+    "#548af7"     # bottom
+    "#6c707e"     # top
+    "transparent" # accent
 )
-FILL=(1 0 3) # fill color indices for circles (bottom, top, accent)
 
 dir=$(dirname -- "$(readlink -f -- "$0")")
 
 mapfile -t colors < <(
-    jq ".colors |
-        .disabled   // \"${COLORS[0]}\",
-        .enabled    // \"${COLORS[1]}\",
-        .error      // \"${COLORS[2]}\",
-                       \"${COLORS[3]}\"" \
+    jq ".icon.default |
+        .bottom     // \"${COLORS[0]}\",
+        .top        // \"${COLORS[1]}\",
+        .accent     // \"${COLORS[2]}\"" \
         "$dir/$MANIFEST"
 )
 
-sed -e "/id=\"bottom\"/s/fill=\"[^\"]*\"/fill=${colors[${FILL[0]}]}/" \
-    -e "/id=\"top\"/s/fill=\"[^\"]*\"/fill=${colors[${FILL[1]}]}/" \
-    -e "/id=\"accent\"/s/fill=\"[^\"]*\"/fill=${colors[${FILL[2]}]}/" \
+sed -e "/id=\"bottom\"/s/fill=\"[^\"]*\"/fill=${colors[0]}/" \
+    -e "/id=\"top\"/s/fill=\"[^\"]*\"/fill=${colors[1]}/" \
+    -e "/id=\"accent\"/s/fill=\"[^\"]*\"/fill=${colors[2]}/" \
     "$dir/icon.svg" |
     magick -background none -size $SIZE - "$dir/icon.png"

@@ -1,2 +1,52 @@
-Custom Mode
-<script src="popup.js" type="module"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Custom Mode</title>
+    <link rel="stylesheet" href="popup.css">
+    <script src="popup.js" type="module"></script>
+</head>
+
+<body>
+<header>
+    <img src="icons/icon.png">
+    <h1>Custom Mode</h1>
+    <button id="reload">RELOAD</button>
+</header>
+
+<ul id="errors-list" class="hidden"></ul>
+
+<details id="requests">
+    <summary>
+        <span class="block-title">Requests</span>
+        <span class="block-info"></span>
+        <input type="checkbox" class="block-enabled">
+        <span class="block-error hidden"></span>
+    </summary>
+    <ul></ul>
+</details>
+
+<details id="injects">
+    <summary>
+        <span class="block-title">Injects</span>
+        <span class="block-info"></span>
+        <input type="checkbox" class="block-enabled">
+        <span class="block-error hidden"></span>
+    </summary>
+    <ul></ul>
+</details>
+
+<footer>
+    <div id="ts"></div>
+</footer>
+
+<template id="rule-template">
+    <li>
+        <span class="rule-type"></span>
+        <span class="rule-id"></span>
+        <input type="checkbox" class="rule-enabled">
+        <span class="rule-error hidden"></span>
+    </li>
+</template>
+</body>
+</html>

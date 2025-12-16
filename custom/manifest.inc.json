@@ -1,86 +1,115 @@
 {
-    "description": [
+    "descript": [
         "This is the main file of the injection declarations and request rules",
-        "",
-        "",
-        "`theme`            object",
-        "   Allows to customize action icon colors",
-        "   This section makes sense only in this file but not in `includes`",
-        "   `icon`          object { disabled: color, enabled: color, accent: color, error: color }",
-        "",
-        "",
-        "`includes`         string[]",
-        "   Allows to break the declaration into several files",
-        "   The structure of other files in `includes` is the same as in this manifest",
-        "   `request_rules` and `content_scripts` will be combined as a result",
-        "   All file paths should be relative to 'custom/' or 'custom/../'",
-        "",
-        "",
-        "`env`              object",
-        "   Allows to use sensitive variables in `request_rules` and `content_scripts`",
-        "   You can add some gitignored '.env' file to `includes` with only `env` section",
-        "   Variables can be used as ${env.VARIABLE}",
-        "",
-        "",
-        "`request_rules`    object[]",
-        "   Redirects and modifying request/response headers",
-        "   `id` naming convention can be (100 + number of domain's first letter) + index, so reddit.com => 1181",
-        "   https://developer.chrome.com/docs/extensions/reference/api/declarativeNetRequest#build-rules",
-        "   {",
-        "       id: 1,",
-        "       priority: 1,",
-        "       action: {",
-        "           type: redirect,",
-        "           redirect: { regexSubstitution: https://\\1.xyz.com/ }",
-        "       }",
-        "       condition: {",
-        "           regexFilter: ^https://www\\.(abc|def)\\.xyz\\.com/,",
-        "           resourceTypes: [ main_frame ]",
-        "       }",
-        "   }",
-        "   {",
-        "       id: 2,",
-        "       priority: 1,",
-        "       action: {",
-        "           type: modifyHeaders,",
-        "           requestHeaders: [{ header: accept-language, operation: set, value: uk }]",
-        "       },",
-        "       condition: { resourceTypes: [ main_frame, sub_frame] }",
-        "   }",
-        "",
-        "",
-        "`content_scripts`  object[]",
-        "   JS and CSS injections",
-        "   https://developer.chrome.com/docs/extensions/reference/manifest/content-scripts",
-        "   {",
-        "       id: example.org",
-        "       matches: [https://*.example.org/*]",
-        "       css: [styles.css]",
-        "       js: [script.js]",
-        "       exclude_matches: [*://*/*foo*]",
-        "       include_globs: [*example.org/???s/*]",
-        "       exclude_globs: [*bar*]",
-        "       all_frames: false",
-        "       match_origin_as_fallback: false",
-        "       run_at: document_idle",
-        "       world: ISOLATED",
-        "   }",
-        ""
-    ],
-    "theme": {
-        "icon": {
-            "disabled": "#6c707e",
-            "enabled": "#548af7",
-            "accent": "#55ff7f",
-            "error": "#ffa040"
+        {
+            "name": "includes",
+            "descript": [
+                "Allows to break the declaration into several files",
+                "The structure of other files in `includes` is the same as in this manifest",
+                "`request_rules` and `content_scripts` will be combined as a result",
+                "All file paths should be relative to 'custom/'"
+            ],
+            "includes": [
+                ".env",
+                "example.json"
+            ]
+        },
+        {
+            "name": "env",
+            "descript": [
+                "Allows to use sensitive or mutable variables in `request_rules` and `content_scripts`",
+                "You can add some git ignored '.env' file to `includes` with only `env` section",
+                "Variables can be used as ${env.VARIABLE}"
+            ],
+            "env": {
+                "EXAMPLE_URL": "example.org",
+                "LANG": "UK"
+            }
+        },
+        {
+            "name": "request_rules",
+            "descript": [
+                "Redirects and modifying request/response headers",
+                "https://developer.chrome.com/docs/extensions/reference/api/declarativeNetRequest#build-rules",
+                "API only allows numbers in `id`, but here we can use unique strings (numbered ids will be generated)",
+                "`name`, `descript` are allowed extra fields for convenience"
+            ],
+            "request_rules": [
+                {
+                    "id": "(abc|def).net => (abc|def).com",
+                    "action": {
+                        "type": "redirect",
+                        "redirect": {
+                            "regexSubstitution": "https://\\1.com/"
+                        }
+                    },
+                    "condition": {
+                        "regexFilter": "^https://www\\.(abc|def)\\.net/",
+                        "resourceTypes": ["main_frame"]
+                    }
+                },
+                {
+                    "id": "* ## Accept-Language: ${env.LANG}",
+                    "priority": 1,
+                    "descript": ["Change `Accept-Language` header on all sites"],
+                    "action": {
+                        "type": "modifyHeaders",
+                        "requestHeaders": [{ "header": "accept-language", "operation": "set", "value": "${env.LANG}" }]
+                    },
+                    "condition": {
+                        "resourceTypes": ["main_frame", "sub_frame"]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "content_scripts",
+            "descript": [
+                "JS and CSS injections",
+                "https://developer.chrome.com/docs/extensions/reference/manifest/content-scripts",
+                "All file paths should be relative to 'custom/'",
+                "`name`, `descript` are allowed extra fields for convenience"
+            ],
+            "content_scripts": [
+                {
+                    "id": "example.org",
+                    "matches": ["https://*.example.org/*", "https://${env.EXAMPLE_URL}/*"],
+                    "css": ["style.css"],
+                    "js": ["script.js"],
+                    "exclude_matches": ["*://*/*foo*"],
+                    "include_globs": ["*example.???/bar/*"],
+                    "exclude_globs": ["*baz*"],
+                    "all_frames": false,
+                    "match_origin_as_fallback": false,
+                    "run_at": "document_idle",
+                    "world": "ISOLATED"
+                }
+            ]
+        },
+        {
+            "name": "icon",
+            "descript": [
+                "Customize action icon colors",
+                "This section makes sense only in this file but not in `includes`",
+                "Default settings are listed below"
+            ],
+            "icon": {
+                "default": { "bottom": "#548af7", "top": "#6c707e", "accent": "transparent" },
+                "disabled": { "bottom": "#6c707e", "top": "#6c707e", "accent": "transparent" },
+                "disabled_request_rules": { "bottom": "#548af7", "top": "#6c707e", "accent": "#6c707e" },
+                "disabled_content_scripts": { "bottom": "#548af7", "top": "#6c707e", "accent": "#6c707e" },
+                "error": { "bottom": "#ffa040", "top": "#ffa040", "accent": "transparent" },
+                "error_request_rules": { "bottom": "#548af7", "top": "#6c707e", "accent": "#ffa040" },
+                "error_content_scripts": { "bottom": "#548af7", "top": "#6c707e", "accent": "#ffa040" }
+            }
         }
-    },
+    ],
     "includes": [
         ".env",
         "instagram/instagram.json",
         "reddit/reddit.json"
     ],
-    "env": {},
+    "env": { },
     "request_rules": [],
     "content_scripts": []
 }

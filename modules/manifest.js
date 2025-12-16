@@ -1,31 +1,39 @@
 import { getState, setState } from './state.js';
 
-const path = 'custom/manifest.inc.json';
+const manifest = 'custom/manifest.inc.json';
 const manifestTpl = {
-    //theme: {},    # Available only in main manifest file
     includes: [],
     env: {},
     request_rules: [],
     content_scripts: []
+    // icon: {} # Available only in main manifest file
 };
 
 async function reload()
 {
+    console.log('--- Reloading Manifest...');
+
     let data = await getState();
 
     data.errors = { manifest: {} };  // Reset errors
-    data.ts = new Date().toISOString();
+    data.ts = Date.now();
 
     ({
         request_rules: data.requests.rules,
         content_scripts: data.injects.rules,
-        theme: data.theme
-    } = await parse(path, data.errors.manifest));
+        icon: data.icon
+    } = await parse(manifest, data.errors.manifest));
+
+    // Assign unique id
+    let uniqueId = 101;
+    data.requests.rules.forEach(rule =>
+        rule._id = typeof rule.id === 'number' ? rule.id : uniqueId++
+    );
+
+    console.log('--- Manifest Request Rules    ---', data.requests.rules, '--- [disabled] ---', data.requests.disabled);
+    console.log('--- Manifest Content Scripts  ---', data.injects.rules, '--- [disabled] ---', data.injects.disabled);
 
     await setState(data);
-
-    console.log('--- Manifest Request Rules    ---', data.requests.rules, { disabled: data.requests.disabled });
-    console.log('--- Manifest Content Scripts  ---', data.injects.rules, { disabled: data.injects.disabled });
 }
 
 async function parse(file, errors = {})
@@ -33,7 +41,7 @@ async function parse(file, errors = {})
     if (!file.startsWith('custom/'))
         file = 'custom/' + file;
 
-    let json = { ...manifestTpl };
+    let json = structuredClone(manifestTpl);
 
     try
     {
@@ -41,6 +49,11 @@ async function parse(file, errors = {})
             await (await fetch(file)).json()
         );
 
+        // Store file for each rule
+        json.request_rules.forEach(rule => rule.file = file);
+        json.content_scripts.forEach(rule => rule.file = file);
+
+        // Process includes recursively
         for (let include of json.includes)
         {
             let includeJson = await parse(include, errors);
@@ -57,7 +70,7 @@ async function parse(file, errors = {})
     }
     catch (e)
     {
-        errors[Object.keys(errors).length] = `${file}: ${e.message}`;
+        errors[file] = e.message;
         console.warn(file, e.message);
     }
 
@@ -72,7 +85,7 @@ function handleEnv(data, env = {})
     if (Array.isArray(data))
         return data.map(x => handleEnv(x, env));
 
-    if (typeof data === 'object')
+    if (data instanceof Object)
         Object.keys(data).forEach(key =>
             data[key] = handleEnv(data[key], env));
 

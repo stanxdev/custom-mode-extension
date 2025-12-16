@@ -6,45 +6,59 @@ const defaultAccentTimeout = 3000;
  * Action icon and badge depends on state of extension
  * Also allows to show the accent (small circle) for some time
  */
-async function updateAction({ badgeOnError = false, accent = false, accentTimeout = defaultAccentTimeout } = {})
+async function updateAction({ badgeOnError = false, accentTimeout = null } = {})
 {
     let state = await getState(),
-        icon = state.theme.icon,
-        hasErrors = Object.values(state.errors).some(x => Object.keys(x).length),
-        iconParams = {
-            bottom: state.injects.registered.length ? icon.enabled : icon.disabled,
-            top: state.requests.registered.length ? icon.enabled : icon.disabled,
-            accent: hasErrors ? icon.error : accent ? icon.accent : 'transparent'
-        };
+        iconColors = getIconColors(state),
+        hasErrors = Object.values(state.errors).some((/*Object*/x) => Object.keys(x).length);
 
-    chrome.action.setIcon({ imageData: generateIcon(iconParams) });
+    await chrome.action.setIcon({ imageData: generateIcon(iconColors) });
 
     if (!hasErrors)
     {
-        chrome.action.setBadgeText({ text: '' });
+        await chrome.action.setBadgeText({ text: '' });
 
-        if (accent && accentTimeout)
+        if (accentTimeout)
         {
             setTimeout(() =>
                 chrome.action.setIcon({
-                    imageData: generateIcon({ bottom: iconParams.bottom, top: iconParams.top })
+                    imageData: generateIcon({ ...iconColors, accent: 'transparent' })
                 }),
-                accentTimeout
+                Number.isInteger(accentTimeout) ? accentTimeout : defaultAccentTimeout
             );
         }
     }
     else if (badgeOnError)
     {
-        chrome.action.setBadgeBackgroundColor({ color: icon.error });
-        chrome.action.setBadgeText({ text: '!' });
+        await chrome.action.setBadgeBackgroundColor({ color: state.icon.error.bottom });
+        await chrome.action.setBadgeText({ text: '!' });
     }
+}
+
+function getIconColors(state)
+{
+    if (Object.keys(state.errors.manifest).length)
+        return state.icon.error;
+    if (Object.keys(state.errors.requests).length)
+        return state.icon.error_request_rules;
+    if (Object.keys(state.errors.injects).length)
+        return state.icon.error_content_scripts;
+
+    if (!state.requests.enabled && !state.injects.enabled)
+        return state.icon.disabled;
+    if (!state.requests.enabled)
+        return state.icon.disabled_request_rules;
+    if (!state.injects.enabled)
+        return state.icon.disabled_content_scripts;
+
+    return state.icon.default;
 }
 
 /**
  * Draw icon on canvas
  * @returns ImageData
  */
-function generateIcon({ bottom = '#6c707e', top = '#6c707e', accent = 'transparent' })
+function generateIcon({ bottom = '#548af7', top = '#6c707e', accent = 'transparent' } = {})
 {
     // Action icon is 16x16, viewport is smaller... So scale context to avoid blur
     const viewportSize = 14;

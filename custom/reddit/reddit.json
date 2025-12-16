@@ -1,26 +1,16 @@
 {
-    "description": [
-        "1181   www.reddit.com/r/   =>  ${env.REDLIB}/r/",
-        "       - exception: ! at the end",
-        "       - https://github.com/redlib-org/redlib-instances/blob/main/instances.md",
-        "       - https://farside.link/libreddit",
-        "1182   (reddit|redlib|rl)/r/",
-        "       - cookies for settings",
-        "       - https://github.com/redlib-org/redlib?tab=readme-ov-file#default-user-settings",
-        "           theme       black, dark, doomone, dracula, gold, gruvboxdark, gruvboxlight,",
-        "                       icebergDark, laserwave, libredditBlack, libredditDark, libredditLightlight,",
-        "                       light, midnightPurple, nord, rosebox, tokyoNight, violet",
-        "           hide_score  on, off",
-        "           ..."
-    ],
     "request_rules": [
         {
-            "id": 1181,
-            "priority": 1,
+            "id": "reddit.com => ${env.REDLIB_URL}",
+            "descript": [
+                "exception: ! at the end",
+                "https://github.com/redlib-org/redlib-instances/blob/main/instances.md",
+                "https://farside.link/libreddit"
+            ],
             "action": {
                 "type": "redirect",
                 "redirect": {
-                    "regexSubstitution": "${env.REDLIB_URL}/r/\\1"
+                    "regexSubstitution": "https://${env.REDLIB_URL}/r/\\1"
                 }
             },
             "condition": {
@@ -31,8 +21,14 @@
             }
         },
         {
-            "id": 1182,
-            "priority": 1,
+            "id": "${env.REDLIB_URL} ## theme ${env.REDLIB_THEME}",
+            "descript": [
+                " - set settings cookies",
+                " - https://github.com/redlib-org/redlib?tab=readme-ov-file#default-user-settings",
+                "       theme       dark, doomone, dracula, libredditDark, libredditLight, rosebox",
+                "       hide_score  on, off",
+                "       ..."
+            ],
             "action": {
                 "type": "modifyHeaders",
                 "requestHeaders": [

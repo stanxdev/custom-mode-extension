@@ -1,8 +1,10 @@
 {
     "request_rules": [
         {
-            "id": 1091,
-            "priority": 1,
+            "id": "instagram.com => imginn.com",
+            "descript": [
+                "exception: ! at the end"
+            ],
             "action": {
                 "type": "redirect",
                 "redirect": {
@@ -10,7 +12,7 @@
                 }
             },
             "condition": {
-                "regexFilter": "^https://www\\.instagram.com/(?:.*?/)?(?:reel|p)/(.*)[^!]$",
+                "regexFilter": "^https://www\\.instagram.com/(?:.*?/)?(?:reels?|p)/(.*)[^!]$",
                 "resourceTypes": [
                     "main_frame"
                 ]
