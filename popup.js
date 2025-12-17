@@ -13,7 +13,9 @@ function init()
 
     // Message `updated` is sent from background.js after registering requests and injects
     chrome.runtime.onMessage.addListener(message =>
-        message === 'updated' && render()
+        message === 'updated' &&
+        render() &&
+        chrome.tabs.reload()
     );
 
     // Reload manifest
