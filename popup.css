@@ -51,11 +51,12 @@ header {
     background-color: var(--bg);
 
     img {
-        height: 2em;
+        height: 1.5em;
     }
     h1 {
         flex-grow: 1;
         font-size: 1.2rem;
+        font-family: system-ui, sans-serif;
     }
 }
 
@@ -111,7 +112,7 @@ details {
 
         .block-title {
             flex-grow: 1;
-            text-transform: uppercase;
+            text-transform: capitalize;
         }
         .block-error {
             display: flex;
