@@ -106,6 +106,7 @@
     ],
     "includes": [
         ".env",
+        "custom.json",
         "instagram/instagram.json",
         "reddit/reddit.json"
     ],
