@@ -1,7 +1,8 @@
 #header,
 .bread-nav,
 .block-sulvo,
-.downloads {
+.downloads,
+div:has(> [data-ad]) {
     display: none !important;
 }
 
